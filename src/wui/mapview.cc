@@ -441,10 +441,14 @@ void MapView::scroll_to_field(const Widelands::Coords& c, const Transition& tran
 }
 
 void MapView::scroll_to_map_pixel(const Vector2f& pos, const Transition& transition) {
-	const TimestampedView current = animation_target_view();
-	const Rectf area = get_view_area(current.view, get_w(), get_h());
+	const TimestampedView target = animation_target_view();
+	const Rectf area = get_view_area(target.view, get_w(), get_h());
 	const Vector2f target_view = pos - Vector2f(area.w / 2.f, area.h / 2.f);
-	set_view(View{target_view, current.view.zoom}, transition);
+
+	// Immediately start moving towards this new 'target'.
+	view_plans_.clear();
+
+	set_view(View{target_view, target.view.zoom}, transition);
 }
 
 MapView::ViewArea MapView::view_area() const {
